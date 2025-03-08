@@ -1,8 +1,7 @@
-[image_0]: https://pfst.cf2.poecdn.net/base/image/f6961f00ae640276641918bd4434226255543de224dc50d1490e9c7777dab9a3?w=161&h=81&pmaid=309711590
+
 
 # Portfolio DevOps & Cybersécurité - Modou Ndiar DIA
 
-![Portfolio Banner][image_0]
 
 ## 📋 Description
 
