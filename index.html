@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio DevOps - Modou Ndiar DIA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/marked@4.0.0/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        secondary: '#4A4A9E',
+                        darkbg: '#181818',
+                        darkcard: '#222222',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .project-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .dark .project-card:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-darkbg text-gray-800 dark:text-gray-200 min-h-screen">
+    <!-- Theme detector -->
+    <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+    </script>
+
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-darkbg shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-code text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold">Modou Ndiar DIA</span>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex space-x-4">
+                        <a href="#projects" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Projets</a>
+                        <a href="#skills" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Compétences</a>
+                        <a href="#about" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-sm font-medium">À Propos</a>
+                        <button id="theme-toggle" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-moon dark:hidden"></i>
+                            <i class="fas fa-sun hidden dark:block"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-gray-50 dark:bg-darkbg border-b border-gray-200 dark:border-gray-800">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl md:text-6xl">
+                    <span class="block text-primary xl:inline">Portfolio DevOps & Cybersécurité</span>
+                </h1>
+                <p class="mt-3 max-w-md mx-auto text-base text-gray-600 dark:text-gray-400 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+                    Explorez mes projets et compétences dans le domaine du DevOps et de la Cybersécurité.
+                </p>
+                <div class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
+                    <div class="rounded-md shadow">
+                        <a href="#projects" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-secondary md:py-4 md:text-lg md:px-10">
+                            Voir les projets
+                        </a>
+                    </div>
+                    <div class="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
+                        <a href="#add-project" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary bg-white dark:bg-darkcard hover:bg-gray-50 dark:hover:bg-gray-800 md:py-4 md:text-lg md:px-10">
+                            Ajouter un projet
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-16 bg-white dark:bg-darkbg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-8 text-center">
+                Mes Projets DevOps & Cybersécurité
+            </h2>
+
+            <!-- Tech Filters -->
+            <div class="mb-8">
+                <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-3">Filtrer par technologies:</h3>
+                <div id="tech-filters" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <!-- Projects Container -->
+            <div id="projects-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Projects will be dynamically added here -->
+                <div class="text-center col-span-full py-10 text-gray-500 dark:text-gray-400">
+                    Aucun projet ajouté pour le moment. Utilisez le formulaire ci-dessous pour ajouter vos projets DevOps.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add Project Section -->
+    <section id="add-project" class="py-16 bg-gray-50 dark:bg-darkcard">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-8 text-center">
+                Ajouter un Projet
+            </h2>
+            <form id="project-form" class="space-y-6 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <div>
+                    <label for="project-title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Titre du Projet</label>
+                    <input type="text" id="project-title" name="title" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
+                </div>
+                <div>
+                    <label for="project-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description (supporte Markdown)</label>
+                    <textarea id="project-description" name="description" rows="4" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base"></textarea>
+                </div>
+                <div>
+                    <label for="project-image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL de l'Image (optionnel)</label>
+                    <input type="url" id="project-image" name="image" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
+                </div>
+                <div>
+                    <label for="project-tech" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Technologies (séparées par virgule)</label>
+                    <input type="text" id="project-tech" name="tech" required placeholder="Docker, Kubernetes, Ansible, etc." class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
+                </div>
+                <div>
+                    <label for="project-link" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Lien du Projet (optionnel)</label>
+                    <input type="url" id="project-link" name="link" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
+                </div>
+                <div>
+                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                        Ajouter le Projet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-16 bg-white dark:bg-darkbg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-8 text-center">
+                Mes Compétences DevOps & Cybersécurité
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-50 dark:bg-darkcard p-6 rounded-lg shadow-md">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-cloud text-primary text-4xl"></i>
+                        <h3 class="mt-2 text-xl font-semibold text-gray-900 dark:text-white">Cloud & Infrastructure</h3>
+                    </div>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">AWS / Azure / GCP</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Infrastructure as Code (Terraform)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Virtualisation (VMware, KVM)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Architectures Cloud Natives</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 dark:bg-darkcard p-6 rounded-lg shadow-md">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-cogs text-primary text-4xl"></i>
+                        <h3 class="mt-2 text-xl font-semibold text-gray-900 dark:text-white">Conteneurisation & Orchestration</h3>
+                    </div>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Docker & Docker Compose</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Kubernetes</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Helm Charts</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Service Mesh (Istio)</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 dark:bg-darkcard p-6 rounded-lg shadow-md">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-code-branch text-primary text-4xl"></i>
+                        <h3 class="mt-2 text-xl font-semibold text-gray-900 dark:text-white">CI/CD & Automation</h3>
+                    </div>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Jenkins / GitLab CI / GitHub Actions</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Configuration Management (Ansible)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Pipeline Automation</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Shell Scripting (Bash, Python)</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 dark:bg-darkcard p-6 rounded-lg shadow-md">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-chart-line text-primary text-4xl"></i>
+                        <h3 class="mt-2 text-xl font-semibold text-gray-900 dark:text-white">Monitoring & Logging</h3>
+                    </div>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Prometheus & Grafana</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">ELK Stack</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Jaeger / New Relic</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Alerte & Remédiation Automatique</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 dark:bg-darkcard p-6 rounded-lg shadow-md">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-shield-alt text-primary text-4xl"></i>
+                        <h3 class="mt-2 text-xl font-semibold text-gray-900 dark:text-white">Sécurité & Conformité</h3>
+                    </div>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">DevSecOps</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Analyse de Vulnérabilités</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Sécurité des Conteneurs</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Gestion des Secrets</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 dark:bg-darkcard p-6 rounded-lg shadow-md">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-users text-primary text-4xl"></i>
+                        <h3 class="mt-2 text-xl font-semibold text-gray-900 dark:text-white">Méthodologies & Pratiques</h3>
+                    </div>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Agile / Scrum</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">SRE (Site Reliability Engineering)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">GitOps</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-2"></i>
+                            <span class="text-gray-700 dark:text-gray-300">Gestion d'Incidents</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 bg-gray-50 dark:bg-darkcard">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-8 text-center">
+                À Propos de Moi
+            </h2>
+            <div class="bg-white dark:bg-gray-800 shadow overflow-hidden rounded-lg">
+                <div class="px-4 py-5 sm:px-6">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                        Informations Personnelles
+                    </h3>
+                    <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
+                        Détails et coordonnées
+                    </p>
+                </div>
+                <div class="border-t border-gray-200 dark:border-gray-700">
+                    <dl>
+                        <div class="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                                Nom complet
+                            </dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                                Modou Ndiar DIA
+                            </dd>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                                Poste actuel
+                            </dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                                Étudiant en Master 2 Cybersécurité & Cloud et Alternant DevOps chez Enedis Lyon
+                            </dd>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                                Email
+                            </dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                                diamodoundiar@gmail.com
+                            </dd>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                                Localisation
+                            </dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                                VilleJuif, France
+                            </dd>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                                À propos
+                            </dt>
+                            <dd class="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                                Passionné par la cybersécurité et le DevOps, je suis actuellement en Master 2 spécialisé en Cybersécurité & Cloud et en alternance chez Enedis Lyon en tant que DevOps. Mon objectif est de combiner mes compétences en sécurité informatique et en automatisation pour créer des infrastructures robustes et sécurisées.
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-darkbg border-t border-gray-200 dark:border-gray-800">
+        <div class="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
+            <div class="mt-8 flex justify-center space-x-6">
+                <a href="https://github.com/mondiar01" target="_blank" class="text-gray-400 hover:text-primary">
+                    <i class="fab fa-github text-xl"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/modou-ndiar-dia-20145a202/" target="_blank" class="text-gray-400 hover:text-primary">
+                    <i class="fab fa-linkedin text-xl"></i>
+                </a>
+                <a href="mailto:diamodoundiar@gmail.com" class="text-gray-400 hover:text-primary">
+                    <i class="fas fa-envelope text-xl"></i>
+                </a>
+            </div>
+            <p class="mt-8 text-center text-base text-gray-500 dark:text-gray-400">
+                &copy; 2023 Modou Ndiar DIA. Tous droits réservés.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Project data storage
+        let projects = [];
+        let allTechnologies = new Set();
+        let activeFilters = new Set();
+
+        // DOM Elements
+        const projectsContainer = document.getElementById('projects-container');
+        const techFilters = document.getElementById('tech-filters');
+        const projectForm = document.getElementById('project-form');
+        const themeToggle = document.getElementById('theme-toggle');
+        
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80, // Offset for fixed navbar
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Toggle theme
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // Form submission
+        projectForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(projectForm);
+            const project = {
+                id: Date.now(),
+                title: formData.get('title'),
+                description: formData.get('description'),
+                image: formData.get('image') || 'https://picsum.photos/400/300',
+                tech: formData.get('tech').split(',').map(tech => tech.trim()).filter(tech => tech !== ''),
+                link: formData.get('link') || null,
+                date: new Date().toLocaleDateString()
+            };
+            
+            // Add project to array
+            projects.push(project);
+            
+            // Update technologies set
+            project.tech.forEach(tech => allTechnologies.add(tech));
+            
+            // Update UI
+            renderProjects();
+            renderTechFilters();
+            
+            // Reset form
+            projectForm.reset();
+            
+            // Scroll to projects section with offset for navbar
+            window.scrollTo({
+                top: document.getElementById('projects').offsetTop - 80,
+                behavior: 'smooth'
+            });
+        });
+
+        // Render projects
+        function renderProjects() {
+            // Clear container
+            projectsContainer.innerHTML = '';
+            
+            // Filter projects based on active filters
+            const filteredProjects = activeFilters.size > 0 
+                ? projects.filter(project => 
+                    project.tech.some(tech => activeFilters.has(tech)))
+                : projects;
+            
+            // If no projects, show message
+            if (filteredProjects.length === 0) {
+                const noProjects = document.createElement('div');
+                noProjects.className = 'text-center col-span-full py-10 text-gray-500 dark:text-gray-400';
+                if (projects.length === 0) {
+                    noProjects.textContent = 'Aucun projet ajouté pour le moment. Utilisez le formulaire ci-dessous pour ajouter vos projets DevOps.';
+                } else {
+                    noProjects.textContent = 'Aucun projet ne correspond aux filtres sélectionnés.';
+                }
+                projectsContainer.appendChild(noProjects);
+                return;
+            }
+            
+            // Render each project
+            filteredProjects.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'project-card bg-white dark:bg-darkcard rounded-lg shadow-md overflow-hidden border border-gray-200 dark:border-gray-700';
+                
+                // Image with aspect ratio
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'relative pb-[60%]';
+                
+                const image = document.createElement('img');
+                image.src = project.image;
+                image.alt = project.title;
+                image.className = 'absolute h-full w-full object-cover';
+                
+                imageContainer.appendChild(image);
+                card.appendChild(imageContainer);
+                
+                // Content container
+                const content = document.createElement('div');
+                content.className = 'p-5';
+                
+                // Title
+                const title = document.createElement('h3');
+                title.className = 'text-xl font-bold text-gray-900 dark:text-white mb-2';
+                title.textContent = project.title;
+                content.appendChild(title);
+                
+                // Date
+                const date = document.createElement('p');
+                date.className = 'text-sm text-gray-500 dark:text-gray-400 mb-3';
+                date.textContent = `Ajouté le ${project.date}`;
+                content.appendChild(date);
+                
+                // Description (with Markdown support)
+                const description = document.createElement('div');
+                description.className = 'text-gray-700 dark:text-gray-300 mb-4 prose dark:prose-invert prose-sm max-w-none';
+                description.innerHTML = marked.parse(project.description);
+                content.appendChild(description);
+                
+                // Technologies
+                const techContainer = document.createElement('div');
+                techContainer.className = 'flex flex-wrap gap-2 mb-4';
+                
+                project.tech.forEach(tech => {
+                    const techBadge = document.createElement('span');
+                    techBadge.className = 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 rounded-md text-xs font-medium';
+                    techBadge.textContent = tech;
+                    techContainer.appendChild(techBadge);
+                });
+                
+                content.appendChild(techContainer);
+                
+                // Link (if available)
+                if (project.link) {
+                    const linkContainer = document.createElement('div');
+                    linkContainer.className = 'mt-4';
+                    
+                    const link = document.createElement('a');
+                    link.href = project.link;
+                    link.target = '_blank';
+                    link.className = 'text-primary hover:text-secondary transition-colors duration-200 flex items-center';
+                    link.innerHTML = '<span>Voir le projet</span> <i class="fas fa-external-link-alt ml-1"></i>';
+                    
+                    linkContainer.appendChild(link);
+                    content.appendChild(linkContainer);
+                }
+                
+                card.appendChild(content);
+                projectsContainer.appendChild(card);
+            });
+        }
+
+        // Render technology filters
+        function renderTechFilters() {
+            techFilters.innerHTML = '';
+            
+            if (allTechnologies.size === 0) {
+                const noTech = document.createElement('div');
+                noTech.className = 'text-gray-500 dark:text-gray-400';
+                noTech.textContent = 'Aucune technologie disponible.';
+                techFilters.appendChild(noTech);
+                return;
+            }
+            
+            // Clear all filters button
+            if (activeFilters.size > 0) {
+                const clearBtn = document.createElement('button');
+                clearBtn.className = 'px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm flex items-center';
+                clearBtn.innerHTML = 'Effacer les filtres <i class="fas fa-times ml-1"></i>';
+                clearBtn.addEventListener('click', () => {
+                    activeFilters.clear();
+                    renderTechFilters();
+                    renderProjects();
+                });
+                techFilters.appendChild(clearBtn);
+            }
+            
+            // Add tech filters
+            Array.from(allTechnologies).sort().forEach(tech => {
+                const filterBtn = document.createElement('button');
+                const isActive = activeFilters.has(tech);
+                
+                filterBtn.className = `px-3 py-1 rounded-full text-sm ${
+                    isActive 
+                        ? 'bg-primary text-white' 
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                }`;
+                filterBtn.textContent = tech;
+                
+                filterBtn.addEventListener('click', () => {
+                    if (isActive) {
+                        activeFilters.delete(tech);
+                    } else {
+                        activeFilters.add(tech);
+                    }
+                    renderTechFilters();
+                    renderProjects();
+                });
+                
+                techFilters.appendChild(filterBtn);
+            });
+        }
+
+        // Add demo data
+        function addDemoProjects() {
+            const demoProjects = [
+                {
+                    id: 1,
+                    title: "Mise en place d'un IDS/SIEM",
+                    description: "Projet de mise en œuvre d'un système de détection d'intrusion (IDS) Suricata avec la stack Elastic pour l'analyse des logs.\n\n**Réalisations** :\n- Configuration de Suricata pour la détection d'intrusions\n- Mise en place d'Elastic Stack (ELK) pour la centralisation des logs\n- Création de dashboards de visualisation des alertes de sécurité\n- Intégration avec des sources de renseignements sur les menaces",
+                    image: "https://picsum.photos/id/180/500/300",
+                    tech: ["Suricata", "ElasticStack", "Docker", "Security"],
+                    link: "https://github.com/mondiar01/IDS-SIEM-Project",
+                    date: "20/09/2023"
+                },
+                {
+                    id: 2,
+                    title: "Infrastructure CI/CD avec Jenkins et Kubernetes",
+                    description: "Mise en place d'une infrastructure CI/CD complète utilisant Jenkins et Kubernetes pour automatiser les déploiements d'applications sécurisées.\n\n**Réalisations** :\n- Pipeline Jenkins déclaratif avec déploiement multi-environnement\n- Configuration Kubernetes avec Helm Charts\n- Intégration d'outils de scan de vulnérabilités\n- Tests automatisés et déploiements progressifs",
+                    image: "https://picsum.photos/id/48/500/300",
+                    tech: ["Jenkins", "Kubernetes", "Docker", "CI/CD", "DevSecOps"],
+                    link: null,
+                    date: "15/08/2023"
+                },
+                {
+                    id: 3,
+                    title: "OTP Authentication System",
+                    description: "Mise en œuvre d'un système d'authentification à double facteur (2FA) avec des One-Time Passwords (OTP).\n\n**Caractéristiques** :\n- Génération de tokens OTP temporaires\n- Authentification sécurisée à deux facteurs\n- API RESTful pour l'intégration avec d'autres services\n- Interface utilisateur intuitive",
+                    image: "https://picsum.photos/id/3/500/300",
+                    tech: ["Python", "Security", "Authentication", "API"],
+                    link: "https://github.com/mondiar01/Mise-en-place-d-un-OTP",
+                    date: "10/07/2023"
+                }
+            ];
+            
+            // Add projects to array
+            projects = [...demoProjects];
+            
+            // Update technologies set
+            projects.forEach(project => {
+                project.tech.forEach(tech => allTechnologies.add(tech));
+            });
+            
+            // Update UI
+            renderProjects();
+            renderTechFilters();
+        }
+
+        // Initial setup
+        addDemoProjects();
+    </script>
+</body>
+</html>
