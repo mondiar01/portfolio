@@ -105,6 +105,17 @@
             transform: translateY(0);
             opacity: 1;
         }
+        /* Skill card hover effect */
+        .skill-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .dark .skill-card:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
     </style>
 </head>
 <body class="bg-white dark:bg-darkbg text-gray-800 dark:text-gray-200 min-h-screen">
@@ -212,9 +223,12 @@
                 <i class="fas fa-user-shield text-primary mr-2"></i>
                 <span class="font-medium">Mode Administration</span>
             </div>
-            <div class="flex space-x-4">
+            <div class="flex flex-wrap gap-2">
                 <button id="add-project-btn" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary text-sm">
                     <i class="fas fa-plus mr-1"></i> Ajouter un projet
+                </button>
+                <button id="add-skill-btn" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary text-sm">
+                    <i class="fas fa-plus mr-1"></i> Ajouter une compétence
                 </button>
                 <button id="admin-logout-btn" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 text-sm">
                     <i class="fas fa-sign-out-alt mr-1"></i> Déconnexion
@@ -271,8 +285,9 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <p class="mb-6 text-gray-700 dark:text-gray-300">Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.</p>
-            <input type="hidden" id="delete-project-id">
+            <p class="mb-6 text-gray-700 dark:text-gray-300">Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.</p>
+            <input type="hidden" id="delete-item-id">
+            <input type="hidden" id="delete-item-type">
             <div class="flex justify-end space-x-3">
                 <button id="cancel-delete" class="modal-close px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">Annuler</button>
                 <button id="confirm-delete" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Supprimer</button>
@@ -280,7 +295,7 @@
         </div>
     </div>
     
-    <!-- Add Project Modal (moved from section to modal) -->
+    <!-- Add Project Modal -->
     <div id="add-project-modal" class="modal">
         <div class="modal-content p-6 fadeIn max-w-3xl">
             <div class="flex justify-between items-center mb-4">
@@ -313,6 +328,83 @@
                 <div class="flex justify-end space-x-3">
                     <button type="button" class="modal-close px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">Annuler</button>
                     <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary">Ajouter le Projet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add Skill Category Modal -->
+    <div id="add-skill-modal" class="modal">
+        <div class="modal-content p-6 fadeIn max-w-3xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold dark:text-white">Ajouter une Catégorie de Compétence</h3>
+                <button class="modal-close text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="skill-form" class="space-y-6">
+                <div>
+                    <label for="skill-title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Titre de la Catégorie</label>
+                    <input type="text" id="skill-title" name="title" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
+                </div>
+                <div>
+                    <label for="skill-icon" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Icône (nom Font Awesome)</label>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-300 text-sm">
+                            fa-
+                        </span>
+                        <input type="text" id="skill-icon" name="icon" required placeholder="cloud, cogs, code-branch, etc." class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:ring-primary focus:border-primary sm:text-sm">
+                    </div>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Voir les icônes disponibles sur <a href="https://fontawesome.com/icons" target="_blank" class="text-primary hover:underline">Font Awesome</a>
+                    </p>
+                </div>
+                <div>
+                    <label for="skill-items" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Compétences (une par ligne)</label>
+                    <textarea id="skill-items" name="items" rows="4" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base" placeholder="AWS / Azure / GCP
+Infrastructure as Code (Terraform)
+Virtualisation (VMware, KVM)
+Architectures Cloud Natives"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" class="modal-close px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">Annuler</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary">Ajouter la Catégorie</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Skill Category Modal -->
+    <div id="edit-skill-modal" class="modal">
+        <div class="modal-content p-6 fadeIn max-w-3xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold dark:text-white">Modifier la Catégorie de Compétence</h3>
+                <button class="modal-close text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="edit-skill-form" class="space-y-6">
+                <input type="hidden" id="edit-skill-id">
+                <div>
+                    <label for="edit-skill-title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Titre de la Catégorie</label>
+                    <input type="text" id="edit-skill-title" name="title" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
+                </div>
+                <div>
+                    <label for="edit-skill-icon" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Icône (nom Font Awesome)</label>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-300 text-sm">
+                            fa-
+                        </span>
+                        <input type="text" id="edit-skill-icon" name="icon" required placeholder="cloud, cogs, code-branch, etc." class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:ring-primary focus:border-primary sm:text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label for="edit-skill-items" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Compétences (une par ligne)</label>
+                    <textarea id="edit-skill-items" name="items" rows="4" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" class="modal-close px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">Annuler</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary">Enregistrer les Modifications</button>
                 </div>
             </form>
         </div>
@@ -361,7 +453,7 @@
             <div id="projects-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 <!-- Projects will be dynamically added here -->
                 <div class="text-center col-span-full py-10 text-gray-500 dark:text-gray-400">
-                    Aucun projet ajouté pour le moment. Utilisez le formulaire ci-dessous pour ajouter vos projets DevOps.
+                    Aucun projet ajouté pour le moment.
                 </div>
             </div>
         </div>
@@ -370,153 +462,20 @@
     <!-- Skills Section -->
     <section id="skills" class="py-12 sm:py-16 bg-white dark:bg-darkbg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-6 sm:mb-8 text-center">
-                Mes Compétences DevOps & Cybersécurité
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
-                <div class="bg-gray-50 dark:bg-darkcard p-4 sm:p-6 rounded-lg shadow-md">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-cloud text-primary text-3xl sm:text-4xl"></i>
-                        <h3 class="mt-2 text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Cloud & Infrastructure</h3>
-                    </div>
-                    <ul class="space-y-2">
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">AWS / Azure / GCP</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Infrastructure as Code (Terraform)</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Virtualisation (VMware, KVM)</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Architectures Cloud Natives</span>
-                        </li>
-                    </ul>
+            <div class="flex justify-between items-center mb-6 sm:mb-8">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white">
+                    Mes Compétences DevOps & Cybersécurité
+                </h2>
+                <div id="add-skill-container" class="hidden">
+                    <button id="add-skill-btn-alt" class="px-4 py-2 rounded-md bg-primary text-white hover:bg-secondary">
+                        <i class="fas fa-plus mr-1"></i> Ajouter
+                    </button>
                 </div>
-                <div class="bg-gray-50 dark:bg-darkcard p-4 sm:p-6 rounded-lg shadow-md">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-cogs text-primary text-3xl sm:text-4xl"></i>
-                        <h3 class="mt-2 text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Conteneurisation & Orchestration</h3>
-                    </div>
-                    <ul class="space-y-2">
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Docker & Docker Compose</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Kubernetes</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Helm Charts</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Service Mesh (Istio)</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="bg-gray-50 dark:bg-darkcard p-4 sm:p-6 rounded-lg shadow-md">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-code-branch text-primary text-3xl sm:text-4xl"></i>
-                        <h3 class="mt-2 text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">CI/CD & Automation</h3>
-                    </div>
-                    <ul class="space-y-2">
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Jenkins / GitLab CI / GitHub Actions</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Configuration Management (Ansible)</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Pipeline Automation</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Shell Scripting (Bash, Python)</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="bg-gray-50 dark:bg-darkcard p-4 sm:p-6 rounded-lg shadow-md">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-chart-line text-primary text-3xl sm:text-4xl"></i>
-                        <h3 class="mt-2 text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Monitoring & Logging</h3>
-                    </div>
-                    <ul class="space-y-2">
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Prometheus & Grafana</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">ELK Stack</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Jaeger / New Relic</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Alerte & Remédiation Automatique</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="bg-gray-50 dark:bg-darkcard p-4 sm:p-6 rounded-lg shadow-md">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-shield-alt text-primary text-3xl sm:text-4xl"></i>
-                        <h3 class="mt-2 text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Sécurité & Conformité</h3>
-                    </div>
-                    <ul class="space-y-2">
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">DevSecOps</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Analyse de Vulnérabilités</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Sécurité des Conteneurs</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Gestion des Secrets</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="bg-gray-50 dark:bg-darkcard p-4 sm:p-6 rounded-lg shadow-md">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-users text-primary text-3xl sm:text-4xl"></i>
-                        <h3 class="mt-2 text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Méthodologies & Pratiques</h3>
-                    </div>
-                    <ul class="space-y-2">
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Agile / Scrum</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">SRE (Site Reliability Engineering)</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">GitOps</span>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-check text-green-500 mr-2"></i>
-                            <span class="text-gray-700 dark:text-gray-300">Gestion d'Incidents</span>
-                        </li>
-                    </ul>
+            </div>
+            <div id="skills-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
+                <!-- Skills will be dynamically added here -->
+                <div class="text-center col-span-full py-10 text-gray-500 dark:text-gray-400">
+                    Chargement des compétences...
                 </div>
             </div>
         </div>
@@ -612,6 +571,7 @@
         let allTechnologies = new Set();
         let activeFilters = new Set();
         let isAdmin = false;
+        let skills = [];
         
         // Admin password (change this to your own secure password)
         const ADMIN_PASSWORD = "Modou2023"; // Vous devriez changer ce mot de passe
@@ -627,11 +587,27 @@
         const adminPanel = document.getElementById('admin-panel');
         const toastNotification = document.getElementById('toast-notification');
         const toastMessage = document.getElementById('toast-message');
+        const skillsContainer = document.getElementById('skills-container');
+        const addSkillContainer = document.getElementById('add-skill-container');
         
         // Add Project Elements
         const addProjectModal = document.getElementById('add-project-modal');
         const addProjectBtn = document.getElementById('add-project-btn');
         const mainAddProjectBtn = document.getElementById('main-add-project-btn');
+        
+        // Add Skill Elements
+        const addSkillModal = document.getElementById('add-skill-modal');
+        const addSkillBtn = document.getElementById('add-skill-btn');
+        const addSkillBtnAlt = document.getElementById('add-skill-btn-alt');
+        const skillForm = document.getElementById('skill-form');
+        
+        // Edit Skill Elements
+        const editSkillModal = document.getElementById('edit-skill-modal');
+        const editSkillForm = document.getElementById('edit-skill-form');
+        const editSkillId = document.getElementById('edit-skill-id');
+        const editSkillTitle = document.getElementById('edit-skill-title');
+        const editSkillIcon = document.getElementById('edit-skill-icon');
+        const editSkillItems = document.getElementById('edit-skill-items');
         
         // Admin login elements
         const adminLoginBtn = document.getElementById('admin-login-btn');
@@ -651,9 +627,10 @@
         const editProjectTech = document.getElementById('edit-project-tech');
         const editProjectLink = document.getElementById('edit-project-link');
         
-        // Delete project elements
+        // Delete item elements
         const deleteConfirmModal = document.getElementById('delete-confirm-modal');
-        const deleteProjectId = document.getElementById('delete-project-id');
+        const deleteItemId = document.getElementById('delete-item-id');
+        const deleteItemType = document.getElementById('delete-item-type');
         const confirmDeleteBtn = document.getElementById('confirm-delete');
         
         // Function to show toast notification
@@ -723,6 +700,15 @@
             openModal(addProjectModal);
         });
         
+        // Add Skill buttons
+        addSkillBtn.addEventListener('click', () => {
+            openModal(addSkillModal);
+        });
+        
+        addSkillBtnAlt.addEventListener('click', () => {
+            openModal(addSkillModal);
+        });
+        
         // Admin login
         adminLoginBtn.addEventListener('click', () => openModal(adminLoginModal));
         adminLoginBtnMobile.addEventListener('click', () => openModal(adminLoginModal));
@@ -734,9 +720,11 @@
             if (password === ADMIN_PASSWORD) {
                 isAdmin = true;
                 adminPanel.classList.remove('hidden');
+                addSkillContainer.classList.remove('hidden');
                 closeModal(adminLoginModal);
                 showToast("Connecté en tant qu'administrateur");
                 renderProjects(); // Re-render projects to show admin controls
+                renderSkills(); // Re-render skills to show admin controls
             } else {
                 loginError.classList.remove('hidden');
                 setTimeout(() => {
@@ -749,8 +737,10 @@
         adminLogoutBtn.addEventListener('click', () => {
             isAdmin = false;
             adminPanel.classList.add('hidden');
+            addSkillContainer.classList.add('hidden');
             showToast("Déconnecté du mode administrateur");
             renderProjects(); // Re-render projects to hide admin controls
+            renderSkills(); // Re-render skills to hide admin controls
         });
         
         // Edit project form submission
@@ -790,30 +780,116 @@
             }
         });
         
+        // Edit skill form submission
+        editSkillForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!isAdmin) return;
+            
+            const id = parseInt(editSkillId.value);
+            const skillIndex = skills.findIndex(s => s.id === id);
+            
+            if (skillIndex !== -1) {
+                // Get form values
+                const title = editSkillTitle.value;
+                const icon = editSkillIcon.value;
+                const itemsText = editSkillItems.value;
+                const items = itemsText.split('\n').filter(item => item.trim() !== '');
+                
+                // Update skill
+                skills[skillIndex] = {
+                    id: id,
+                    title: title,
+                    icon: icon,
+                    items: items
+                };
+                
+                // Update UI
+                renderSkills();
+                
+                // Close modal
+                closeModal(editSkillModal);
+                
+                // Show toast notification
+                showToast("Catégorie de compétence modifiée avec succès");
+            }
+        });
+        
+        // Add skill form submission
+        skillForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!isAdmin) return;
+            
+            // Get form values
+            const title = document.getElementById('skill-title').value;
+            const icon = document.getElementById('skill-icon').value;
+            const itemsText = document.getElementById('skill-items').value;
+            const items = itemsText.split('\n').filter(item => item.trim() !== '');
+            
+            // Create new skill
+            const newSkill = {
+                id: Date.now(),
+                title: title,
+                icon: icon,
+                items: items
+            };
+            
+            // Add to skills array
+            skills.push(newSkill);
+            
+            // Update UI
+            renderSkills();
+            
+            // Reset form
+            skillForm.reset();
+            
+            // Close modal
+            closeModal(addSkillModal);
+            
+            // Show toast notification
+            showToast("Catégorie de compétence ajoutée avec succès");
+        });
+        
         // Confirm delete button
         confirmDeleteBtn.addEventListener('click', () => {
             if (!isAdmin) return;
             
-            const id = parseInt(deleteProjectId.value);
-            const projectIndex = projects.findIndex(p => p.id === id);
+            const id = parseInt(deleteItemId.value);
+            const type = deleteItemType.value;
             
-            if (projectIndex !== -1) {
-                // Remove project
-                projects.splice(projectIndex, 1);
+            if (type === 'project') {
+                const projectIndex = projects.findIndex(p => p.id === id);
                 
-                // Refresh technologies
-                refreshTechnologies();
+                if (projectIndex !== -1) {
+                    // Remove project
+                    projects.splice(projectIndex, 1);
+                    
+                    // Refresh technologies
+                    refreshTechnologies();
+                    
+                    // Update UI
+                    renderProjects();
+                    renderTechFilters();
+                    
+                    // Show toast notification
+                    showToast("Projet supprimé avec succès");
+                }
+            } else if (type === 'skill') {
+                const skillIndex = skills.findIndex(s => s.id === id);
                 
-                // Update UI
-                renderProjects();
-                renderTechFilters();
-                
-                // Close modal
-                closeModal(deleteConfirmModal);
-                
-                // Show toast notification
-                showToast("Projet supprimé avec succès");
+                if (skillIndex !== -1) {
+                    // Remove skill
+                    skills.splice(skillIndex, 1);
+                    
+                    // Update UI
+                    renderSkills();
+                    
+                    // Show toast notification
+                    showToast("Catégorie de compétence supprimée avec succès");
+                }
             }
+            
+            // Close modal
+            closeModal(deleteConfirmModal);
         });
         
         // Function to refresh the technologies set
@@ -848,11 +924,27 @@
             }
         }
         
-        // Delete project function
-        function deleteProject(id) {
+        // Edit skill function
+        function editSkill(id) {
             if (!isAdmin) return;
             
-            deleteProjectId.value = id;
+            const skill = skills.find(s => s.id === id);
+            if (skill) {
+                editSkillId.value = skill.id;
+                editSkillTitle.value = skill.title;
+                editSkillIcon.value = skill.icon;
+                editSkillItems.value = skill.items.join('\n');
+                
+                openModal(editSkillModal);
+            }
+        }
+        
+        // Delete item function
+        function deleteItem(id, type) {
+            if (!isAdmin) return;
+            
+            deleteItemId.value = id;
+            deleteItemType.value = type;
             openModal(deleteConfirmModal);
         }
         
@@ -1007,7 +1099,7 @@
                     deleteBtn.className = 'p-1 text-gray-500 hover:text-red-500';
                     deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
                     deleteBtn.title = 'Supprimer';
-                    deleteBtn.addEventListener('click', () => deleteProject(project.id));
+                    deleteBtn.addEventListener('click', () => deleteItem(project.id, 'project'));
                     
                     adminControls.appendChild(editBtn);
                     adminControls.appendChild(deleteBtn);
@@ -1065,6 +1157,92 @@
                 projectsContainer.appendChild(card);
             });
         }
+        
+        // Render skills
+        function renderSkills() {
+            // Clear container
+            skillsContainer.innerHTML = '';
+            
+            // If no skills, show message
+            if (skills.length === 0) {
+                const noSkills = document.createElement('div');
+                noSkills.className = 'text-center col-span-full py-10 text-gray-500 dark:text-gray-400';
+                if (isAdmin) {
+                    noSkills.textContent = 'Aucune catégorie de compétence ajoutée. Cliquez sur "Ajouter une compétence" pour commencer.';
+                } else {
+                    noSkills.textContent = 'Aucune compétence disponible pour le moment.';
+                }
+                skillsContainer.appendChild(noSkills);
+                return;
+            }
+            
+            // Render each skill category
+            skills.forEach(skill => {
+                const card = document.createElement('div');
+                card.className = 'skill-card bg-gray-50 dark:bg-darkcard p-4 sm:p-6 rounded-lg shadow-md';
+                card.setAttribute('data-id', skill.id);
+                
+                // Admin controls (only visible when logged in)
+                if (isAdmin) {
+                    const adminControls = document.createElement('div');
+                    adminControls.className = 'flex justify-end space-x-2 mb-2';
+                    
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'p-1 text-gray-500 hover:text-primary';
+                    editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                    editBtn.title = 'Modifier';
+                    editBtn.addEventListener('click', () => editSkill(skill.id));
+                    
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'p-1 text-gray-500 hover:text-red-500';
+                    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                    deleteBtn.title = 'Supprimer';
+                    deleteBtn.addEventListener('click', () => deleteItem(skill.id, 'skill'));
+                    
+                    adminControls.appendChild(editBtn);
+                    adminControls.appendChild(deleteBtn);
+                    card.appendChild(adminControls);
+                }
+                
+                // Header with icon
+                const header = document.createElement('div');
+                header.className = 'text-center mb-4';
+                
+                const icon = document.createElement('i');
+                icon.className = `fas fa-${skill.icon} text-primary text-3xl sm:text-4xl`;
+                
+                const title = document.createElement('h3');
+                title.className = 'mt-2 text-lg sm:text-xl font-semibold text-gray-900 dark:text-white';
+                title.textContent = skill.title;
+                
+                header.appendChild(icon);
+                header.appendChild(title);
+                card.appendChild(header);
+                
+                // List of skills
+                const list = document.createElement('ul');
+                list.className = 'space-y-2';
+                
+                skill.items.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'flex items-center';
+                    
+                    const checkIcon = document.createElement('i');
+                    checkIcon.className = 'fas fa-check text-green-500 mr-2';
+                    
+                    const text = document.createElement('span');
+                    text.className = 'text-gray-700 dark:text-gray-300';
+                    text.textContent = item;
+                    
+                    listItem.appendChild(checkIcon);
+                    listItem.appendChild(text);
+                    list.appendChild(listItem);
+                });
+                
+                card.appendChild(list);
+                skillsContainer.appendChild(card);
+            });
+        }
 
         // Render technology filters
         function renderTechFilters() {
@@ -1117,7 +1295,7 @@
             });
         }
 
-        // Add demo data
+        // Add demo data for projects
         function addDemoProjects() {
             const demoProjects = [
                 {
@@ -1161,9 +1339,94 @@
             renderProjects();
             renderTechFilters();
         }
+        
+        // Add demo data for skills
+        function addDemoSkills() {
+            const demoSkills = [
+                {
+                    id: 1,
+                    title: "Cloud & Infrastructure",
+                    icon: "cloud",
+                    items: [
+                        "AWS / Azure / GCP",
+                        "Infrastructure as Code (Terraform)",
+                        "Virtualisation (VMware, KVM)",
+                        "Architectures Cloud Natives"
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Conteneurisation & Orchestration",
+                    icon: "cogs",
+                    items: [
+                        "Docker & Docker Compose",
+                        "Kubernetes",
+                        "Helm Charts",
+                        "Service Mesh (Istio)"
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "CI/CD & Automation",
+                    icon: "code-branch",
+                    items: [
+                        "Jenkins / GitLab CI / GitHub Actions",
+                        "Configuration Management (Ansible)",
+                        "Pipeline Automation",
+                        "Shell Scripting (Bash, Python)"
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "Monitoring & Logging",
+                    icon: "chart-line",
+                    items: [
+                        "Prometheus & Grafana",
+                        "ELK Stack",
+                        "Jaeger / New Relic",
+                        "Alerte & Remédiation Automatique"
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "Sécurité & Conformité",
+                    icon: "shield-alt",
+                    items: [
+                        "DevSecOps",
+                        "Analyse de Vulnérabilités",
+                        "Sécurité des Conteneurs",
+                        "Gestion des Secrets"
+                    ]
+                },
+                {
+                    id: 6,
+                    title: "Méthodologies & Pratiques",
+                    icon: "users",
+                    items: [
+                        "Agile / Scrum",
+                        "SRE (Site Reliability Engineering)",
+                        "GitOps",
+                        "Gestion d'Incidents"
+                    ]
+                }
+            ];
+            
+            // Add skills to array
+            skills = [...demoSkills];
+            
+            // Update UI
+            renderSkills();
+        }
 
         // Initial setup
         addDemoProjects();
+        addDemoSkills();
+        
+        // Update UI based on admin status
+        if (isAdmin) {
+            adminPanel.classList.remove('hidden');
+            addSkillContainer.classList.remove('hidden');
+        }
         
         // Handle resize events for better mobile experience
         window.addEventListener('resize', () => {
