@@ -45,21 +45,6 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         }
         
-        /* Skill item hover effect */
-        .skill-item {
-            transition: all 0.2s ease;
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-        }
-        
-        .skill-item:hover {
-            background-color: rgba(93, 92, 222, 0.1);
-        }
-        
-        .dark .skill-item:hover {
-            background-color: rgba(93, 92, 222, 0.2);
-        }
-        
         /* Mobile menu animation */
         .mobile-menu {
             transition: transform 0.3s ease, opacity 0.3s ease;
@@ -146,8 +131,8 @@
         /* Profile pic styling */
         .profile-pic {
             position: relative;
-            width: 250px;
-            height: 250px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
             overflow: hidden;
             border: 4px solid #5D5CDE;
@@ -158,6 +143,27 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+        
+        /* Progress bars for skills */
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e2e8f0;
+            overflow: hidden;
+            position: relative;
+            margin-top: 4px;
+        }
+        
+        .dark .progress-bar {
+            background-color: #374151;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: #5D5CDE;
+            border-radius: 4px;
+            transition: width 1s ease-in-out;
         }
         
         /* Header animation */
@@ -297,9 +303,6 @@
                 <span class="font-medium">Mode Administration</span>
             </div>
             <div class="flex flex-wrap gap-2">
-                <button id="edit-profile-btn" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary text-sm">
-                    <i class="fas fa-user-edit mr-1"></i> Modifier profil
-                </button>
                 <button id="add-project-btn" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary text-sm">
                     <i class="fas fa-plus mr-1"></i> Ajouter un projet
                 </button>
@@ -532,52 +535,6 @@ Architectures Cloud Natives"></textarea>
             </form>
         </div>
     </div>
-    
-    <!-- Edit Profile Modal -->
-    <div id="edit-profile-modal" class="modal">
-        <div class="modal-content p-6 fadeIn max-w-3xl">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-semibold dark:text-white">Modifier mes informations</h3>
-                <button class="modal-close text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <form id="profile-form" class="space-y-6">
-                <div>
-                    <label for="profile-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom complet</label>
-                    <input type="text" id="profile-name" name="name" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
-                </div>
-                <div>
-                    <label for="profile-title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Titre / Poste</label>
-                    <input type="text" id="profile-title" name="title" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
-                </div>
-                <div>
-                    <label for="profile-bio" class="block text-sm font-medium text-gray-700 dark:text-gray-300">À propos de moi</label>
-                    <textarea id="profile-bio" name="bio" rows="4" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base"></textarea>
-                </div>
-                <div>
-                    <label for="profile-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-                    <input type="email" id="profile-email" name="email" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
-                </div>
-                <div>
-                    <label for="profile-location" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Localisation</label>
-                    <input type="text" id="profile-location" name="location" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
-                </div>
-                <div>
-                    <label for="profile-github" class="block text-sm font-medium text-gray-700 dark:text-gray-300">GitHub (username)</label>
-                    <input type="text" id="profile-github" name="github" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
-                </div>
-                <div>
-                    <label for="profile-linkedin" class="block text-sm font-medium text-gray-700 dark:text-gray-300">LinkedIn (URL ou identifiant)</label>
-                    <input type="text" id="profile-linkedin" name="linkedin" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
-                </div>
-                <div class="flex justify-end space-x-3">
-                    <button type="button" class="modal-close px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">Annuler</button>
-                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary">Enregistrer</button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- Header -->
     <header class="header-gradient py-16 sm:py-28 relative">
@@ -586,8 +543,8 @@ Architectures Cloud Natives"></textarea>
                 Portfolio DevOps & Cybersécurité
             </h1>
             <p class="text-xl text-gray-300 max-w-2xl mx-auto">
-                <span id="header-title">Étudiant en Master 2 Cybersécurité & Cloud<br>
-                Alternant DevOps chez Enedis Lyon</span>
+                Étudiant en Master 2 Cybersécurité & Cloud<br>
+                Alternant DevOps chez Enedis Lyon
             </p>
         </div>
     </header>
@@ -610,7 +567,7 @@ Architectures Cloud Natives"></textarea>
                 </div>
                 
                 <div class="w-full md:w-2/3">
-                    <p id="profile-bio-display" class="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+                    <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
                         Passionné par la cybersécurité et le DevOps, je suis actuellement en Master 2 spécialisé en Cybersécurité & Cloud et en alternance chez Enedis Lyon en tant que DevOps. Mon objectif est de combiner mes compétences en sécurité informatique et en automatisation pour créer des infrastructures robustes et sécurisées.
                     </p>
                     
@@ -655,19 +612,19 @@ Architectures Cloud Natives"></textarea>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="flex items-center">
                                 <i class="fas fa-envelope text-primary mr-3"></i>
-                                <a id="profile-email-display" href="mailto:diamodoundiar@gmail.com" class="text-primary hover:underline">diamodoundiar@gmail.com</a>
+                                <a href="mailto:diamodoundiar@gmail.com" class="text-primary hover:underline">diamodoundiar@gmail.com</a>
                             </div>
                             <div class="flex items-center">
                                 <i class="fas fa-map-marker-alt text-primary mr-3"></i>
-                                <span id="profile-location-display">VilleJuif, France</span>
+                                <span>VilleJuif, France</span>
                             </div>
                             <div class="flex items-center">
                                 <i class="fab fa-github text-primary mr-3"></i>
-                                <a id="profile-github-link" href="https://github.com/mondiar01" target="_blank" class="text-primary hover:underline">github.com/mondiar01</a>
+                                <a href="https://github.com/mondiar01" target="_blank" class="text-primary hover:underline">github.com/mondiar01</a>
                             </div>
                             <div class="flex items-center">
                                 <i class="fab fa-linkedin text-primary mr-3"></i>
-                                <a id="profile-linkedin-link" href="https://www.linkedin.com/in/modou-ndiar-dia-20145a202/" target="_blank" class="text-primary hover:underline">Modou Ndiar DIA</a>
+                                <a href="https://www.linkedin.com/in/modou-ndiar-dia-20145a202/" target="_blank" class="text-primary hover:underline">Modou Ndiar DIA</a>
                             </div>
                         </div>
                     </div>
@@ -739,40 +696,31 @@ Architectures Cloud Natives"></textarea>
     <footer class="bg-gray-900 text-white py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
             <div class="flex justify-center space-x-6 mb-4">
-                <a id="footer-github-link" href="https://github.com/mondiar01" target="_blank" class="text-gray-300 hover:text-white transition-colors">
+                <a href="https://github.com/mondiar01" target="_blank" class="text-gray-300 hover:text-white transition-colors">
                     <i class="fab fa-github text-xl"></i>
                 </a>
-                <a id="footer-linkedin-link" href="https://www.linkedin.com/in/modou-ndiar-dia-20145a202/" target="_blank" class="text-gray-300 hover:text-white transition-colors">
+                <a href="https://www.linkedin.com/in/modou-ndiar-dia-20145a202/" target="_blank" class="text-gray-300 hover:text-white transition-colors">
                     <i class="fab fa-linkedin text-xl"></i>
                 </a>
-                <a id="footer-email-link" href="mailto:diamodoundiar@gmail.com" class="text-gray-300 hover:text-white transition-colors">
+                <a href="mailto:diamodoundiar@gmail.com" class="text-gray-300 hover:text-white transition-colors">
                     <i class="fas fa-envelope text-xl"></i>
                 </a>
             </div>
             <p class="text-center text-gray-400">
-                &copy; 2023 <span id="footer-name">Modou Ndiar DIA</span>. Tous droits réservés.
+                &copy; 2023 Modou Ndiar DIA. Tous droits réservés.
             </p>
         </div>
     </footer>
 
     <!-- JavaScript -->
     <script>
-        // Data storage
+        // Project data storage
         let projects = [];
         let allTechnologies = new Set();
         let activeFilters = new Set();
         let isAdmin = false;
         let skills = [];
-        let profileData = {
-            name: "Modou Ndiar DIA",
-            title: "Étudiant en Master 2 Cybersécurité & Cloud\nAlternant DevOps chez Enedis Lyon",
-            bio: "Passionné par la cybersécurité et le DevOps, je suis actuellement en Master 2 spécialisé en Cybersécurité & Cloud et en alternance chez Enedis Lyon en tant que DevOps. Mon objectif est de combiner mes compétences en sécurité informatique et en automatisation pour créer des infrastructures robustes et sécurisées.",
-            email: "diamodoundiar@gmail.com",
-            location: "VilleJuif, France",
-            github: "mondiar01",
-            linkedin: "modou-ndiar-dia-20145a202",
-            photo: "https://avatars.githubusercontent.com/u/43781903?v=4"
-        };
+        let profilePhotoUrl = "https://avatars.githubusercontent.com/u/43781903?v=4"; // Default photo
         
         // Admin password
         const ADMIN_PASSWORD = "Modou2023";
@@ -792,52 +740,6 @@ Architectures Cloud Natives"></textarea>
         const addSkillContainer = document.getElementById('add-skill-container');
         const addProjectContainer = document.getElementById('add-project-container');
         const profileImage = document.getElementById('profile-image');
-        
-        // Profile elements
-        const headerTitle = document.getElementById('header-title');
-        const profileBioDisplay = document.getElementById('profile-bio-display');
-        const profileEmailDisplay = document.getElementById('profile-email-display');
-        const profileLocationDisplay = document.getElementById('profile-location-display');
-        const profileGithubLink = document.getElementById('profile-github-link');
-        const profileLinkedinLink = document.getElementById('profile-linkedin-link');
-        const footerName = document.getElementById('footer-name');
-        const footerGithubLink = document.getElementById('footer-github-link');
-        const footerLinkedinLink = document.getElementById('footer-linkedin-link');
-        const footerEmailLink = document.getElementById('footer-email-link');
-        
-        // Update profile info function
-        function updateProfileInfo() {
-            // Update header
-            headerTitle.textContent = profileData.title;
-            
-            // Update about section
-            profileBioDisplay.textContent = profileData.bio;
-            profileEmailDisplay.textContent = profileData.email;
-            profileEmailDisplay.href = `mailto:${profileData.email}`;
-            profileLocationDisplay.textContent = profileData.location;
-            
-            // Update GitHub links
-            const githubUrl = `https://github.com/${profileData.github}`;
-            profileGithubLink.href = githubUrl;
-            profileGithubLink.textContent = `github.com/${profileData.github}`;
-            footerGithubLink.href = githubUrl;
-            
-            // Update LinkedIn links
-            let linkedinUrl = profileData.linkedin;
-            if (!linkedinUrl.startsWith('http')) {
-                linkedinUrl = `https://www.linkedin.com/in/${profileData.linkedin}`;
-            }
-            profileLinkedinLink.href = linkedinUrl;
-            profileLinkedinLink.textContent = profileData.name;
-            footerLinkedinLink.href = linkedinUrl;
-            
-            // Update footer
-            footerName.textContent = profileData.name;
-            footerEmailLink.href = `mailto:${profileData.email}`;
-            
-            // Update image
-            profileImage.src = profileData.photo;
-        }
         
         // Nav links
         const navLinks = document.querySelectorAll('.nav-link');
@@ -878,18 +780,6 @@ Architectures Cloud Natives"></textarea>
         const uploadPhotoBtn = document.getElementById('upload-photo-btn');
         const uploadPhotoModal = document.getElementById('upload-photo-modal');
         const photoForm = document.getElementById('photo-form');
-        
-        // Profile related elements
-        const editProfileBtn = document.getElementById('edit-profile-btn');
-        const editProfileModal = document.getElementById('edit-profile-modal');
-        const profileForm = document.getElementById('profile-form');
-        const profileName = document.getElementById('profile-name');
-        const profileTitle = document.getElementById('profile-title');
-        const profileBio = document.getElementById('profile-bio');
-        const profileEmail = document.getElementById('profile-email');
-        const profileLocation = document.getElementById('profile-location');
-        const profileGithub = document.getElementById('profile-github');
-        const profileLinkedin = document.getElementById('profile-linkedin');
         
         // Add Project Elements
         const addProjectModal = document.getElementById('add-project-modal');
@@ -944,42 +834,11 @@ Architectures Cloud Natives"></textarea>
             }, duration);
         }
         
-        // Edit profile button
-        editProfileBtn.addEventListener('click', () => {
-            // Fill form with current profile data
-            profileName.value = profileData.name;
-            profileTitle.value = profileData.title;
-            profileBio.value = profileData.bio;
-            profileEmail.value = profileData.email;
-            profileLocation.value = profileData.location;
-            profileGithub.value = profileData.github;
-            profileLinkedin.value = profileData.linkedin;
-            
-            // Open modal
-            openModal(editProfileModal);
-        });
-        
-        // Profile form submission
-        profileForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (!isAdmin) return;
-            
-            // Update profile data
-            profileData.name = profileName.value;
-            profileData.title = profileTitle.value;
-            profileData.bio = profileBio.value;
-            profileData.email = profileEmail.value;
-            profileData.location = profileLocation.value;
-            profileData.github = profileGithub.value;
-            profileData.linkedin = profileLinkedin.value;
-            
-            // Update UI
-            updateProfileInfo();
-            
-            // Close modal and show toast
-            closeModal(editProfileModal);
-            showToast("Informations mises à jour avec succès");
-        });
+        // Update profile image
+        function updateProfileImage(url) {
+            profilePhotoUrl = url;
+            profileImage.src = url;
+        }
         
         // Photo form submission
         photoForm.addEventListener('submit', (e) => {
@@ -987,8 +846,7 @@ Architectures Cloud Natives"></textarea>
             if (!isAdmin) return;
             
             const url = document.getElementById('profile-photo-url').value;
-            profileData.photo = url;
-            profileImage.src = url;
+            updateProfileImage(url);
             
             // Close modal and show toast
             closeModal(uploadPhotoModal);
@@ -997,7 +855,7 @@ Architectures Cloud Natives"></textarea>
         
         // Upload photo button
         uploadPhotoBtn.addEventListener('click', () => {
-            document.getElementById('profile-photo-url').value = profileData.photo;
+            document.getElementById('profile-photo-url').value = profilePhotoUrl;
             openModal(uploadPhotoModal);
         });
         
@@ -1543,23 +1401,41 @@ Architectures Cloud Natives"></textarea>
                 header.appendChild(title);
                 card.appendChild(header);
                 
-                // List of skills with green check icons
+                // List of skills with progress bars
                 const list = document.createElement('ul');
-                list.className = 'space-y-2';
+                list.className = 'space-y-4';
                 
-                skill.items.forEach((item) => {
+                skill.items.forEach((item, idx) => {
                     const listItem = document.createElement('li');
-                    listItem.className = 'skill-item flex items-center';
                     
-                    const checkIcon = document.createElement('i');
-                    checkIcon.className = 'fas fa-check text-green-500 mr-2';
+                    const skillName = document.createElement('div');
+                    skillName.className = 'flex justify-between mb-1';
                     
-                    const text = document.createElement('span');
-                    text.className = 'text-gray-700 dark:text-gray-300';
-                    text.textContent = item;
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'text-gray-700 dark:text-gray-300 font-medium';
+                    nameSpan.textContent = item;
                     
-                    listItem.appendChild(checkIcon);
-                    listItem.appendChild(text);
+                    // Generate a random proficiency level between 70 and 95%
+                    const proficiency = Math.floor(Math.random() * 26) + 70;
+                    const profSpan = document.createElement('span');
+                    profSpan.className = 'text-gray-500 dark:text-gray-400 text-sm';
+                    profSpan.textContent = `${proficiency}%`;
+                    
+                    skillName.appendChild(nameSpan);
+                    skillName.appendChild(profSpan);
+                    
+                    // Add progress bar
+                    const progressBar = document.createElement('div');
+                    progressBar.className = 'progress-bar';
+                    
+                    const progressFill = document.createElement('div');
+                    progressFill.className = 'progress-fill';
+                    progressFill.style.width = `${proficiency}%`;
+                    
+                    progressBar.appendChild(progressFill);
+                    
+                    listItem.appendChild(skillName);
+                    listItem.appendChild(progressBar);
                     list.appendChild(listItem);
                 });
                 
@@ -1743,7 +1619,6 @@ Architectures Cloud Natives"></textarea>
         }
 
         // Initial setup
-        updateProfileInfo();
         addDemoProjects();
         addDemoSkills();
         
