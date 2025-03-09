@@ -85,9 +85,37 @@
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* Toast notification style */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 300px;
+            background-color: #5D5CDE;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transform: translateY(-100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .toast-notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="bg-white dark:bg-darkbg text-gray-800 dark:text-gray-200 min-h-screen">
+    <!-- Toast notification -->
+    <div id="toast-notification" class="toast-notification">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="toast-message">Connecté en tant qu'administrateur</span>
+        </div>
+    </div>
+    
     <!-- Theme detector -->
     <script>
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -116,9 +144,9 @@
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center">
                     <div class="flex space-x-4">
-                        <a href="#projects" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Projets</a>
-                        <a href="#skills" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-sm font-medium">Compétences</a>
-                        <a href="#about" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-sm font-medium">À Propos</a>
+                        <a href="#projects" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-sm font-medium js-scroll-trigger">Projets</a>
+                        <a href="#skills" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-sm font-medium js-scroll-trigger">Compétences</a>
+                        <a href="#about" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-sm font-medium js-scroll-trigger">À Propos</a>
                         <button id="admin-login-btn" class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
                             <i class="fas fa-lock"></i>
                         </button>
@@ -148,9 +176,9 @@
         <!-- Mobile menu -->
         <div id="mobile-menu" class="mobile-menu md:hidden bg-white dark:bg-darkcard absolute w-full shadow-lg">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#projects" class="block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-base font-medium">Projets</a>
-                <a href="#skills" class="block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-base font-medium">Compétences</a>
-                <a href="#about" class="block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-base font-medium">À Propos</a>
+                <a href="#projects" class="block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-base font-medium js-scroll-trigger">Projets</a>
+                <a href="#skills" class="block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-base font-medium js-scroll-trigger">Compétences</a>
+                <a href="#about" class="block text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-3 py-2 rounded-md text-base font-medium js-scroll-trigger">À Propos</a>
             </div>
         </div>
     </nav>
@@ -185,6 +213,9 @@
                 <span class="font-medium">Mode Administration</span>
             </div>
             <div class="flex space-x-4">
+                <button id="add-project-btn" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary text-sm">
+                    <i class="fas fa-plus mr-1"></i> Ajouter un projet
+                </button>
                 <button id="admin-logout-btn" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 text-sm">
                     <i class="fas fa-sign-out-alt mr-1"></i> Déconnexion
                 </button>
@@ -248,6 +279,44 @@
             </div>
         </div>
     </div>
+    
+    <!-- Add Project Modal (moved from section to modal) -->
+    <div id="add-project-modal" class="modal">
+        <div class="modal-content p-6 fadeIn max-w-3xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold dark:text-white">Ajouter un Projet</h3>
+                <button class="modal-close text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="project-form" class="space-y-6">
+                <div>
+                    <label for="project-title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Titre du Projet</label>
+                    <input type="text" id="project-title" name="title" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
+                </div>
+                <div>
+                    <label for="project-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description (supporte Markdown)</label>
+                    <textarea id="project-description" name="description" rows="4" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base"></textarea>
+                </div>
+                <div>
+                    <label for="project-image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL de l'Image (optionnel)</label>
+                    <input type="url" id="project-image" name="image" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
+                </div>
+                <div>
+                    <label for="project-tech" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Technologies (séparées par virgule)</label>
+                    <input type="text" id="project-tech" name="tech" required placeholder="Docker, Kubernetes, Ansible, etc." class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
+                </div>
+                <div>
+                    <label for="project-link" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Lien du Projet (optionnel)</label>
+                    <input type="url" id="project-link" name="link" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" class="modal-close px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">Annuler</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary">Ajouter le Projet</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <header class="bg-gray-50 dark:bg-darkbg border-b border-gray-200 dark:border-gray-800">
@@ -261,14 +330,14 @@
                 </p>
                 <div class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
                     <div class="rounded-md shadow w-full sm:w-auto mb-3 sm:mb-0">
-                        <a href="#projects" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-secondary md:py-4 md:text-lg md:px-10">
+                        <a href="#projects" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-secondary md:py-4 md:text-lg md:px-10 js-scroll-trigger">
                             Voir les projets
                         </a>
                     </div>
                     <div class="rounded-md shadow w-full sm:w-auto sm:ml-3">
-                        <a href="#add-project" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary bg-white dark:bg-darkcard hover:bg-gray-50 dark:hover:bg-gray-800 md:py-4 md:text-lg md:px-10">
+                        <button id="main-add-project-btn" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary bg-white dark:bg-darkcard hover:bg-gray-50 dark:hover:bg-gray-800 md:py-4 md:text-lg md:px-10">
                             Ajouter un projet
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -295,42 +364,6 @@
                     Aucun projet ajouté pour le moment. Utilisez le formulaire ci-dessous pour ajouter vos projets DevOps.
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Add Project Section -->
-    <section id="add-project" class="py-12 sm:py-16 bg-gray-50 dark:bg-darkcard">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mb-6 sm:mb-8 text-center">
-                Ajouter un Projet
-            </h2>
-            <form id="project-form" class="space-y-6 bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-md">
-                <div>
-                    <label for="project-title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Titre du Projet</label>
-                    <input type="text" id="project-title" name="title" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
-                </div>
-                <div>
-                    <label for="project-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Description (supporte Markdown)</label>
-                    <textarea id="project-description" name="description" rows="4" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base"></textarea>
-                </div>
-                <div>
-                    <label for="project-image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL de l'Image (optionnel)</label>
-                    <input type="url" id="project-image" name="image" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
-                </div>
-                <div>
-                    <label for="project-tech" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Technologies (séparées par virgule)</label>
-                    <input type="text" id="project-tech" name="tech" required placeholder="Docker, Kubernetes, Ansible, etc." class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
-                </div>
-                <div>
-                    <label for="project-link" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Lien du Projet (optionnel)</label>
-                    <input type="url" id="project-link" name="link" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary text-base">
-                </div>
-                <div>
-                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
-                        Ajouter le Projet
-                    </button>
-                </div>
-            </form>
         </div>
     </section>
 
@@ -592,6 +625,13 @@
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
         const adminPanel = document.getElementById('admin-panel');
+        const toastNotification = document.getElementById('toast-notification');
+        const toastMessage = document.getElementById('toast-message');
+        
+        // Add Project Elements
+        const addProjectModal = document.getElementById('add-project-modal');
+        const addProjectBtn = document.getElementById('add-project-btn');
+        const mainAddProjectBtn = document.getElementById('main-add-project-btn');
         
         // Admin login elements
         const adminLoginBtn = document.getElementById('admin-login-btn');
@@ -615,6 +655,16 @@
         const deleteConfirmModal = document.getElementById('delete-confirm-modal');
         const deleteProjectId = document.getElementById('delete-project-id');
         const confirmDeleteBtn = document.getElementById('confirm-delete');
+        
+        // Function to show toast notification
+        function showToast(message, duration = 3000) {
+            toastMessage.textContent = message;
+            toastNotification.classList.add('show');
+            
+            setTimeout(() => {
+                toastNotification.classList.remove('show');
+            }, duration);
+        }
         
         // Mobile menu toggle
         mobileMenuButton.addEventListener('click', () => {
@@ -659,6 +709,20 @@
             });
         });
         
+        // Add Project buttons
+        mainAddProjectBtn.addEventListener('click', () => {
+            if (isAdmin) {
+                openModal(addProjectModal);
+            } else {
+                openModal(adminLoginModal);
+                showToast("Vous devez vous connecter en tant qu'administrateur pour ajouter un projet", 5000);
+            }
+        });
+        
+        addProjectBtn.addEventListener('click', () => {
+            openModal(addProjectModal);
+        });
+        
         // Admin login
         adminLoginBtn.addEventListener('click', () => openModal(adminLoginModal));
         adminLoginBtnMobile.addEventListener('click', () => openModal(adminLoginModal));
@@ -671,6 +735,7 @@
                 isAdmin = true;
                 adminPanel.classList.remove('hidden');
                 closeModal(adminLoginModal);
+                showToast("Connecté en tant qu'administrateur");
                 renderProjects(); // Re-render projects to show admin controls
             } else {
                 loginError.classList.remove('hidden');
@@ -684,6 +749,7 @@
         adminLogoutBtn.addEventListener('click', () => {
             isAdmin = false;
             adminPanel.classList.add('hidden');
+            showToast("Déconnecté du mode administrateur");
             renderProjects(); // Re-render projects to hide admin controls
         });
         
@@ -718,6 +784,9 @@
                 
                 // Close modal
                 closeModal(editProjectModal);
+                
+                // Show toast notification
+                showToast("Projet modifié avec succès");
             }
         });
         
@@ -741,6 +810,9 @@
                 
                 // Close modal
                 closeModal(deleteConfirmModal);
+                
+                // Show toast notification
+                showToast("Projet supprimé avec succès");
             }
         });
         
@@ -784,21 +856,36 @@
             openModal(deleteConfirmModal);
         }
         
-        // Smooth scroll for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
+        // Improved scroll function that works better on mobile
+        function scrollToElement(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                // Get height of the fixed header
+                const navHeight = document.querySelector('nav').offsetHeight;
                 
-                if (targetElement) {
-                    // Adjust offset for smaller screens
-                    const offset = window.innerWidth < 640 ? 60 : 80;
-                    window.scrollTo({
-                        top: targetElement.offsetTop - offset,
-                        behavior: 'smooth'
-                    });
-                }
+                // Calculate the position to scroll to
+                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                const offsetPosition = elementPosition - navHeight - 20;
+                
+                // Smooth scroll to element
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        // Improved scroll handling for all links with href starting with #
+        document.querySelectorAll('.js-scroll-trigger').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Close mobile menu if open
+                mobileMenu.classList.remove('active');
+                
+                // Extract the target id from the href
+                const targetId = this.getAttribute('href').substring(1);
+                scrollToElement(targetId);
             });
         });
 
@@ -813,6 +900,11 @@
         // Form submission
         projectForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            if (!isAdmin) {
+                showToast("Vous devez être connecté en tant qu'administrateur pour ajouter un projet");
+                return;
+            }
             
             const formData = new FormData(projectForm);
             const project = {
@@ -838,12 +930,14 @@
             // Reset form
             projectForm.reset();
             
-            // Scroll to projects section with offset for navbar
-            const offset = window.innerWidth < 640 ? 60 : 80;
-            window.scrollTo({
-                top: document.getElementById('projects').offsetTop - offset,
-                behavior: 'smooth'
-            });
+            // Close modal
+            closeModal(addProjectModal);
+            
+            // Show toast notification
+            showToast("Projet ajouté avec succès");
+            
+            // Scroll to projects section
+            scrollToElement('projects');
         });
 
         // Render projects
@@ -862,7 +956,12 @@
                 const noProjects = document.createElement('div');
                 noProjects.className = 'text-center col-span-full py-10 text-gray-500 dark:text-gray-400';
                 if (projects.length === 0) {
-                    noProjects.textContent = 'Aucun projet ajouté pour le moment. Utilisez le formulaire ci-dessous pour ajouter vos projets DevOps.';
+                    noProjects.textContent = 'Aucun projet ajouté pour le moment.';
+                    if (isAdmin) {
+                        noProjects.textContent += ' Cliquez sur "Ajouter un projet" pour commencer.';
+                    } else {
+                        noProjects.textContent += ' Connectez-vous en tant qu\'administrateur pour ajouter des projets.';
+                    }
                 } else {
                     noProjects.textContent = 'Aucun projet ne correspond aux filtres sélectionnés.';
                 }
