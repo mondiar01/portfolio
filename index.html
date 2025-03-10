@@ -259,6 +259,14 @@
         .delete-item-btn:hover {
             background-color: rgba(220, 38, 38, 0.2);
         }
+        
+        /* Code export modal */
+        #export-html-code {
+            white-space: pre-wrap;
+            overflow-y: auto;
+            resize: none;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-darkbg text-gray-800 dark:text-gray-200">
@@ -374,6 +382,9 @@
                 </button>
                 <button id="upload-photo-btn" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary text-sm">
                     <i class="fas fa-camera mr-1"></i> Photo
+                </button>
+                <button id="export-html-btn" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm">
+                    <i class="fas fa-file-code mr-1"></i> Exporter HTML
                 </button>
                 <button id="admin-logout-btn" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 text-sm">
                     <i class="fas fa-sign-out-alt mr-1"></i> Déconnexion
@@ -744,6 +755,52 @@ Architectures Cloud Natives"></textarea>
             </div>
         </div>
     </div>
+    
+    <!-- Export HTML Modal -->
+    <div id="export-html-modal" class="modal">
+        <div class="modal-content p-6 fadeIn max-w-5xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold dark:text-white">Exporter le code HTML</h3>
+                <button class="modal-close text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-6">
+                <div class="bg-yellow-50 dark:bg-yellow-900 border-l-4 border-yellow-400 p-4 mb-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-yellow-400 text-lg"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700 dark:text-yellow-200">
+                                Pour conserver vos modifications de façon permanente, copiez ce code HTML complet et remplacez le contenu de votre fichier sur GitHub ou votre hébergeur web.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <button id="copy-html-btn" class="absolute top-2 right-2 px-3 py-1.5 bg-primary text-white rounded-md hover:bg-secondary text-sm z-10">
+                        <i class="fas fa-copy mr-1"></i> Copier le code
+                    </button>
+                    <textarea id="export-html-code" class="w-full h-96 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 font-mono text-sm p-4 rounded-md" readonly></textarea>
+                </div>
+                
+                <div class="space-y-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                    <h4 class="font-medium text-gray-800 dark:text-gray-200">Comment utiliser ce code :</h4>
+                    <ol class="list-decimal pl-5 space-y-2 text-gray-700 dark:text-gray-300">
+                        <li>Copiez tout le code HTML en cliquant sur le bouton "Copier le code"</li>
+                        <li>Allez sur votre dépôt GitHub où le site est hébergé</li>
+                        <li>Trouvez le fichier HTML principal (généralement index.html)</li>
+                        <li>Cliquez sur le bouton "Modifier" (icône de crayon)</li>
+                        <li>Supprimez tout le contenu actuel</li>
+                        <li>Collez le nouveau code HTML</li>
+                        <li>Validez les modifications avec un message comme "Mise à jour du portfolio"</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Header -->
     <header class="header-gradient py-16 sm:py-28 relative">
@@ -998,6 +1055,90 @@ Architectures Cloud Natives"></textarea>
         const photoPreview = document.getElementById('photo-preview');
         const savePhotoBtn = document.getElementById('save-photo-btn');
         const profilePhotoUrl = document.getElementById('profile-photo-url');
+        
+        // Export HTML elements
+        const exportHTMLBtn = document.getElementById('export-html-btn');
+        const exportHTMLModal = document.getElementById('export-html-modal');
+        const exportHTMLCode = document.getElementById('export-html-code');
+        const copyHTMLBtn = document.getElementById('copy-html-btn');
+        
+        // Export HTML function
+        function exportHTML() {
+            // Get current HTML with all data updated
+            // First, create a deep clone of the document
+            const htmlDoc = document.documentElement.cloneNode(true);
+            
+            // Clean up any modal dialogs that might be open
+            const modals = htmlDoc.querySelectorAll('.modal.active');
+            modals.forEach(modal => {
+                modal.classList.remove('active');
+            });
+            
+            // Hide admin panel in the exported code
+            const adminPanelClone = htmlDoc.querySelector('#admin-panel');
+            if (adminPanelClone) {
+                adminPanelClone.classList.add('hidden');
+            }
+            
+            // Hide add buttons
+            const addContainers = htmlDoc.querySelectorAll('#add-project-container, #add-skill-container');
+            addContainers.forEach(container => {
+                container.classList.add('hidden');
+            });
+            
+            // Convert data objects to strings to be included in the HTML
+            const dataScript = document.createElement('script');
+            dataScript.textContent = `
+                // Initial Data
+                const initialProjects = ${JSON.stringify(projects)};
+                const initialSkills = ${JSON.stringify(skills)};
+                const initialProfileData = ${JSON.stringify(profileData)};
+                
+                // Set initial data before running the main script
+                window.addEventListener('DOMContentLoaded', function() {
+                    projects = initialProjects;
+                    skills = initialSkills;
+                    profileData = initialProfileData;
+                    
+                    // Update UI
+                    updateProfileInfo();
+                    addDemoProjects = function() { renderProjects(); renderTechFilters(); };
+                    addDemoSkills = function() { renderSkills(); };
+                    
+                    // Call these functions
+                    addDemoProjects();
+                    addDemoSkills();
+                });
+            `;
+            
+            // Find the script section and insert this initialization code at the beginning
+            const scripts = htmlDoc.querySelectorAll('script');
+            const mainScript = scripts[scripts.length - 1]; // The last script is the main one
+            
+            // Insert data script before the main script
+            if (mainScript.parentNode) {
+                mainScript.parentNode.insertBefore(dataScript, mainScript);
+            }
+            
+            // Get the HTML content
+            const htmlContent = htmlDoc.outerHTML;
+            
+            // Set the content in the textarea
+            exportHTMLCode.value = htmlContent;
+            
+            // Open the modal
+            openModal(exportHTMLModal);
+        }
+        
+        // Copy HTML Code
+        copyHTMLBtn.addEventListener('click', () => {
+            exportHTMLCode.select();
+            document.execCommand('copy');
+            showToast("Code HTML copié dans le presse-papier");
+        });
+        
+        // Export HTML button
+        exportHTMLBtn.addEventListener('click', exportHTML);
         
         // File upload handling
         photoUploadArea.addEventListener('click', () => {
